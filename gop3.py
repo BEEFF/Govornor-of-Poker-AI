@@ -44,11 +44,11 @@ def extractCards():
     f1 = input("Enter Card 1 Filename : ")
     f2 = input("Enter Card 2 Filename : ")
     
-    playerCard1 = img[310:360, 430:470]
+    playerCard1 = img[325:380, 430:470]
     if f1 != "x":
         cv2.imwrite((directory+"/left/"+f1+".png"), playerCard1)
     
-    playerCard2 = img[305:360, 470:510]
+    playerCard2 = img[324:376, 472:505]
     if f2 != "x":
         cv2.imwrite((directory+"/right/"+f2+".png"), playerCard2)
 
@@ -58,9 +58,9 @@ def extractFlopCards():
     f1 = input("Enter Flop 1 Filename: ")
     f2 = input("Enter Flop 2 Filename: ")
     f3 = input("Enter Flop 3 Filename: ")
-    r1 = img[190:250, 350:390]
-    r2 = img[190:250, 400:440]                                   
-    r3 = img[190:250, 450:490]
+    r1 = img[206:260, 351:391]
+    r2 = img[206:260, 399:440]                                   
+    r3 = img[206:260, 449:490]
     if f1 != "x":
         cv2.imwrite((directory+"/river/"+f1+".png"), r1)
     if f2 != "x":
@@ -72,7 +72,7 @@ def extractTurnCards():
     img = cv2.imread('screenshot.png', cv2.IMREAD_UNCHANGED)
     directory = "cards/"
     f1 = input("Enter Turn Filename: ")
-    r4 = img[190:245, 495:535]
+    r4 = img[206:260, 498:537]
     if f1 != "x":
         cv2.imwrite((directory+"/river/"+f1+".png"), r4)
 
@@ -80,13 +80,19 @@ def extractRiverCards():
     img = cv2.imread('screenshot.png', cv2.IMREAD_UNCHANGED)
     directory = "cards/"
     f1 = input("Enter River Filename: ")
-    r5 = img[188:245, 545:585]
+    r5 = img[206:260, 545:585]
     if f1 != "x":
         cv2.imwrite((directory+"/river/"+f1+".png"), r5)
 
 
 
-    
+def extractFirst():
+    img = cv2.imread('screenshot.png', cv2.IMREAD_UNCHANGED)
+    playerCard1 = img[206:260, 400:450]
+    playerCard1 = img[206:260, 545:585]
+    plt.imshow(playerCard1)
+    plt.show()
+    #cv2.imwrite("feed.png", playerCard)
     
 
 def display():
@@ -103,10 +109,10 @@ def getPlayerCards():
     #cv2.imshow('ImageWindow', img)
     #cv2.waitKey()
     
-    playerCard1 = img[305:365, 425:480]
+    playerCard1 = img[320:385, 425:475]
     gray1 = cv2.cvtColor(playerCard1, cv2.COLOR_BGR2GRAY)
     
-    playerCard2 = img[300:365, 465:515]
+    playerCard2 = img[320:380, 465:510]
     gray2 = cv2.cvtColor(playerCard2, cv2.COLOR_BGR2GRAY)
 
     """
@@ -121,17 +127,19 @@ def getPlayerCards():
     detectedCard1 = detection(gray1.astype(np.uint8), "left")
     detectedCard2 = detection(gray2.astype(np.uint8), "right")
 
+    """
     print("Player Card 1: " + detectedCard1)
     print("Player Card 2: " + detectedCard2)
+    """
 
     return (detectedCard1, detectedCard2)
 
 def getFlopCards():
     img = cv2.imread('screenshot.png', cv2.IMREAD_UNCHANGED)
     # using bigger box boundary than extraction. 
-    r1 = img[185:250, 345:395]
-    r2 = img[185:250, 395:445]
-    r3 = img[185:250, 445:495]
+    r1 = img[201:265, 346:396]
+    r2 = img[201:265, 394:445]                                   
+    r3 = img[201:265, 444:495]
     d1 = detection(toGray(r1), "river")
     d2 = detection(toGray(r2), "river")
     d3 = detection(toGray(r3), "river")
@@ -142,24 +150,26 @@ def getFlopCards():
     plt.imshow(r3)
     plt.show()
     '''
-    
+
+    """
     print("Flop Card 1: " + d1)
     print("Flop Card 2: " + d2)
     print("Flop Card 3: " + d3)
+    """
     return (d1,d2,d3)
 
 def getTurnCards():
     img = cv2.imread('screenshot.png', cv2.IMREAD_UNCHANGED)
-    r4 = img[185:250, 490:540]
+    r4 = img[201:265, 495:543]
     d4 = detection(toGray(r4), "river")
     print("Turn Card: " + d4)
     return d4
 
 def getRiverCards():
     img = cv2.imread('screenshot.png', cv2.IMREAD_UNCHANGED)
-    r5 = img[185:250, 540:590]
+    r5 = img[201:265, 540:590]
     d5 = detection(toGray(r5), "river")
-    print("River Card: " + d5)
+    #print("River Card: " + d5)
     return d5
 
 def getAllCards():
@@ -179,7 +189,7 @@ def se():
     
 
 def screenshot_and_run():
-    screensho
+    screenshot()
     getPlayerCards()
 
 
@@ -191,16 +201,16 @@ def createBoard():
     
     # create flop only board...
     if d=="" and ("" not in [a,b,c]):
-        board = [Card.new(a), Card.new(b), Card.new(c)]
+        board = [convertSymbols(a), convertSymbols(b), convertSymbols(c)]
         return board
 
     # create turn board
     elif d!= "" and e=="" and ("" not in [a,b,c]):
-        board = [Card.new(a), Card.new(b), Card.new(c), Card.new(d)]
+        board = [convertSymbols(a), convertSymbols(b), convertSymbols(c), convertSymbols(d)]
         return board
     elif ("" not in [a,b,c,d,e]):
         #create full board
-        board = [Card.new(a), Card.new(b), Card.new(c), Card.new(d), Card.new(e)]
+        board = [convertSymbols(a), convertSymbols(b), convertSymbols(c), convertSymbols(d), convertSymbols(e)]
         return board
     else:
         # return empty board
@@ -209,23 +219,35 @@ def createBoard():
 def createHand():
     a,b = getPlayerCards()
     if "" not in [a,b]:
-        hand = [Card.new(a), Card.new(b)]
+        hand = [convertSymbols(a), convertSymbols(b)]
         return hand
     else:
      return []
 
 
+
+def monte_carlo(hole_card, community_card):
+    print(hole_card, community_card)
+    from pypokerengine.utils.card_utils import gen_cards, estimate_hole_card_win_rate    
+    return estimate_hole_card_win_rate(nb_simulation=1000, nb_player=5, hole_card=gen_cards(hole_card), community_card=gen_cards(community_card))
+
+def convertSymbols(original):
+    # Converting my old format to pypokerengine format
+    new = original
+    if len(original) > 1:
+        new = new[-1:] + new[1:-1] + new[:1]
+        return new.upper()
+    else:
+        return ""
+    
+
+    
 def evaluate():
     screenshot()
     board = createBoard()
     hand = createHand()
-    if board and hand:
-        evaluator = Evaluator()
-        rank = evaluator.evaluate(hand, board)
-        rank_class = evaluator.get_rank_class(rank)
-        class_string = evaluator.class_to_string(rank_class)
-        percentage = 1.0 - evaluator.get_five_card_rank_percentage(rank)  # higher better here
-        print("hand = {}, percentage rank among all hands = {}".format(class_string, round(percentage,4)))    
+    if hand:
+        print("Chance: " + str(monte_carlo(hand, board)))
     else:
         print("skipped evaluation... ")
         extract = (input("Do you want to extract data? y/n "))
@@ -266,7 +288,7 @@ def detection(template, section):
         img_gray = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2GRAY)
 
         res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
-        threshold = 0.95
+        threshold = 0.96
         loc = np.where(res >= threshold)
         detects = zip(*loc[::-1])
 
@@ -288,6 +310,6 @@ if __name__ == "__main__":
     #openCV()
     #detection()
     print("Starting AI")
+    extractFirst()
     while True:
-        time.sleep(3)
         evaluate()
