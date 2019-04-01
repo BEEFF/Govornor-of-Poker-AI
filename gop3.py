@@ -227,7 +227,6 @@ def createHand():
 
 
 def monte_carlo(hole_card, community_card):
-    print(hole_card, community_card)
     from pypokerengine.utils.card_utils import gen_cards, estimate_hole_card_win_rate    
     return estimate_hole_card_win_rate(nb_simulation=1000, nb_player=5, hole_card=gen_cards(hole_card), community_card=gen_cards(community_card))
 
@@ -256,27 +255,52 @@ def evaluate():
         
         
         
+def plain():
+    board = []
+    hand = []
+    states = ["preflop", "flop", "turn", "river"]
+    counter = 0
+    state = states[counter]
+    print("-----------------------------------------")
+    print("Card input in format: dT = 10 of Diamonds ")
+    print("-----------------------------------------")
 
-def example_evaluate():
-    evaluator = Evaluator()
-    board = [
-        Card.new('3h'),
-        Card.new('Kd'),
-        Card.new('Jc'),
-        Card.new('Qh'),
-        Card.new('Qd')
-    ]
     
-    hand = [
-        Card.new('Qs'),
-        Card.new('Th')
-    ]
+    while True:
+        
+        print("")
+        if state == "preflop":
+            p1 = input("Player 1 Card: ")
+            hand.append(p1)
+            p2 = input("Player 2 Card: ")
+            hand.append(p2)
+            
 
-    rank = evaluator.evaluate(hand, board)
-    rank_class = evaluator.get_rank_class(rank)
-    class_string = evaluator.class_to_string(rank_class)
-    percentage = 1.0 - evaluator.get_five_card_rank_percentage(rank)  # higher better here
-    print("hand = {}, percentage rank among all hands = {}".format(class_string, round(percentage,4)))
+        if state == "flop":
+            b1 = input("Flop Card 1: ")
+            b2 = input("Flop Card 2: ")
+            b3 = input("Flop Card 3: ")
+            board.append(b1)
+            board.append(b2)
+            board.append(b3)
+            
+        if state == "turn":
+            b4 = input("Turn Card: ")
+            board.append(b4)
+
+        if state == "river":
+            b5 = input("River Card: ")
+            board.append(b5)
+        print("---------------------")
+        print("")
+        print("Chance: " + str(monte_carlo(hand, board)))
+        print("")
+        print("---------------------")
+        counter += 1
+        if counter == 4:
+            counter = 0
+        state = states[counter]
+        
         
   
 
@@ -309,7 +333,10 @@ if __name__ == "__main__":
     #screenshot()
     #openCV()
     #detection()
-    print("Starting AI")
-    extractFirst()
-    while True:
-        evaluate()
+    if input("1) Image Recon 2) Plain Evaluator") == 1:
+        print("Starting AI")
+        extractFirst()
+        while True:
+            evaluate()
+    else:
+        plain()
